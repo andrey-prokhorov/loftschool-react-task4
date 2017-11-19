@@ -1,19 +1,20 @@
 import React, { Component } from "react";
 import "./Switcher.css";
+import classNames from "classnames";
 
 class Switcher extends Component {
   state = {
     selectedChild: 0
   };
 
-  handleChangeChild = event => {
-    const id = parseInt(event.target.getAttribute('data-id'), 10);
-    this.setState({selectedChild: id});
+  handleChangeChild = id => event => {
+    this.setState({ selectedChild: id });
   };
 
-  getChildClass = (id) => {
-    return id === this.state.selectedChild ? "component-list__name active" : "component-list__name"
-  }
+  getChildClass = id => {
+    const isActive = id === this.state.selectedChild;
+    return classNames("component-list__name", isActive ? "active" : "");
+  };
 
   showChildrenNames = () => {
     const { children } = this.props;
@@ -21,8 +22,7 @@ class Switcher extends Component {
     return children.map((child, id) => (
       <li
         key={child.type.name}
-        data-id={id}
-        onClick={this.handleChangeChild}
+        onClick={this.handleChangeChild(id)}
         className={this.getChildClass(id)}
       >
         {child.type.displayName || child.type.name}
@@ -34,7 +34,7 @@ class Switcher extends Component {
     const { children } = this.props;
     const { selectedChild } = this.state;
 
-    return children[selectedChild];    
+    return children[selectedChild];
   };
 
   render() {
